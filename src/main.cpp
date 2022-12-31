@@ -1,6 +1,7 @@
 #include "../includes/includes.h"
 #include "../includes/lexer.h"
 #include "../includes/parser.h"
+#include "../includes/interpreter.h"
 
 #define BUF_SIZE 4096
 
@@ -12,6 +13,7 @@ int main(int argc, char *argv[]){
 
 	Lexer lexer;
 	Parser parser(&lexer);
+	Interpreter interpreter;
 	char buf[BUF_SIZE];
 	FILE *prgm;
 
@@ -35,6 +37,8 @@ int main(int argc, char *argv[]){
 	AstNode *p = parser.parse_program();
 	parser.print_ast(p, 0);
 	puts("---end of AST---");
+
+	interpreter.interpret(p);
 
 	exit(0);
 }

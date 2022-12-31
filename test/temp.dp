@@ -1,4 +1,9 @@
 print 1 + 1;
 print 2 + 2;
-
+print 3213 - 3213 + 12 - 20;
+print 1 - 1;
+print 10 - 20;
+print 20 - 10;
+print 30 + 10 - 20;
+print 30 - 10 - 20;
 
