@@ -8,6 +8,5 @@
 #include <cctype>
 #include <errno.h>
 #include <vector>
-#include "lexer.h"
 
 #endif

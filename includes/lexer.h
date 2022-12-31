@@ -2,13 +2,19 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "includes.h"
+#include<cstdlib>
+
 enum class Token_ {
-	PLUS, MINUS, INT, SEMI, PRINT, EOT,
+	PLUS, MINUS, INT, SEMI, PRINT, EOT, 
+	LPARAN, RPARAN,
+	ASTGLUE
 };
 
 struct Token {
-	Token_ token = Token_::PLUS;
+	Token(Token_ type){
+		token = type;
+	}
+	Token_ token;
 	int intvalue = 0;
 };
 
@@ -16,11 +22,13 @@ class Lexer {
 public:
 	Lexer(){
 		tkns.token_array = (Token **)malloc(sizeof(Token *));
+		curr_token = 0;
 	}
-	Token next();
+	Token *next();
 	void put_back();
 	void lex(char *filein);
 	void print_tokens();
+	static void print_token(Token* token);
 	void done();
 private:
 	struct Token_Array {
