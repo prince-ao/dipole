@@ -39,6 +39,10 @@ int Interpreter::i_expression(AstNode *root){
 		case Token_::MINUS:
 			return lval - rval;
 			break;
+		case Token_::STAR:
+			return lval * rval;
+		case Token_::SLASH:
+			return lval / rval;
 		case Token_::INT:
 			return root->data->intvalue;
 		default:

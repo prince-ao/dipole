@@ -5,7 +5,8 @@
 #include<cstdlib>
 
 enum class Token_ {
-	PLUS, MINUS, INT, SEMI, PRINT, EOT, 
+	PLUS, MINUS, STAR, SLASH,
+	INT, SEMI, PRINT, EOT, 
 	LPARAN, RPARAN,
 	ASTGLUE
 };

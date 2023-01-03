@@ -36,20 +36,34 @@ AstNode *Parser::expression(){
 	AstNode *left, *right;
 
 
+	left = factor();
+
+	while(1){
+		Token *tt = l->next();
+		
+		if(!match(tt, Token_::PLUS, Token_::MINUS)){
+			l->put_back();
+			break;
+		}
+
+		right = factor();
+
+		left = mkastnode(tt, left, right);
+	}
+
+	return left;
+}
+
+AstNode *Parser::factor(){
+	AstNode *left, *right;
+
+
 	left = unary();
 
 	while(1){
 		Token *tt = l->next();
-		/*if(tt->token == Token_::SEMI)
-			return left;*/
 
-		/*if(tt->token != Token_::PLUS && tt->token != Token_::MINUS){
-			fprintf(stderr, "invalid token, expected + or -, but got: \n");
-			l->print_token(tt);
-			exit(1);
-		}*/
-
-		if(!arithop(tt)){
+		if(!match(tt, Token_::STAR, Token_::SLASH)){
 			l->put_back();
 			break;
 		}
@@ -62,11 +76,13 @@ AstNode *Parser::expression(){
 	return left;
 }
 
-bool Parser::arithop(Token *tt){
-	if(tt->token == Token_::PLUS || tt->token == Token_::MINUS){
-		return true;
-	}
-	return false;
+bool Parser::match(Token *a, Token_ b) {
+  return a->token == b;
+}
+
+template<typename... Args>
+bool Parser::match(Token *a, Token_ b, Args... args) {
+  return a->token == b || match(a, args...);
 }
 
 AstNode *Parser::unary() {

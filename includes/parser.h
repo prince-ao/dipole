@@ -25,6 +25,10 @@ private:
 	AstNode *alloc_ast_node();
 	AstNode *expression();
 	AstNode *unary();
+	AstNode *factor();
+	bool match(Token *a, Token_ b);
+	template<typename... Args>
+	bool match(Token *a, Token_ b, Args... args);
 	bool arithop(Token *tt);
 	AstNode *mkastnode(Token *token, AstNode *left, AstNode *right);
 	AstNode *mkastleaf(Token *token);

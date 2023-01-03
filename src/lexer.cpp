@@ -19,6 +19,16 @@ void Lexer::lex(char *filein){
 			case '-':
 				push_back(Token_::MINUS, 0);
 				break;
+			case '*':
+				push_back(Token_::STAR, 0);
+				break;
+			case '/':
+				if(filein[curr+1] == '/'){
+					line_comment();
+				}else{
+					push_back(Token_::SLASH, 0);
+				}
+				break;
 			case ';':
 				push_back(Token_::SEMI, 0);
 				break;
@@ -27,11 +37,6 @@ void Lexer::lex(char *filein){
 				break;
 			case ')':
 				push_back(Token_::RPARAN, 0);
-				break;
-			case '/':
-				if(filein[curr+1] == '/'){
-					line_comment();
-				}
 				break;
 			default:
 				if(keyword()) break;
@@ -124,7 +129,6 @@ void Lexer::print_tokens() {
 	}
 }
 
-
 void Lexer::print_token(Token* token){
 	switch(token->token){
 		case Token_::PLUS:
@@ -132,6 +136,12 @@ void Lexer::print_token(Token* token){
 			break;
 		case Token_::MINUS:
 			printf("<%s>\n", "MINUS");
+			break;
+		case Token_::STAR:
+			printf("<%s>\n", "STAR");
+			break;
+		case Token_::SLASH:
+			printf("<%s>\n", "SLASH");
 			break;
 		case Token_::INT:
 			printf("<%s, %d>\n", "INT", token->intvalue);
