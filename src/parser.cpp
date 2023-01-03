@@ -92,13 +92,25 @@ AstNode *Parser::unary() {
 	if(t->token == Token_::MINUS){
 		left = unary();
 		left = mkastunary(t, left);
-	}else if(t->token == Token_::INT){
-		left = mkastleaf(t);
 	}else {
-		fputs("invalid token, expect unary\n", stderr);
-		exit(1);
+		left = primary(t);
 	}
 	return left;
+}
+
+AstNode *Parser::primary(Token *t){
+	AstNode *n;
+	if(t->token == Token_::INT){
+		n = mkastleaf(t);
+	}else if(t->token == Token_::LPARAN){
+		 n = expression();
+		 t = l->next();
+		 if(!match(t, Token_::RPARAN)){
+			 fputs("expected right paran", stderr);
+			 exit(1);
+		 }
+	}
+	return n;
 }
 
 AstNode *Parser::alloc_ast_node() {

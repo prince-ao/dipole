@@ -73,10 +73,10 @@ int Lexer::get_int() {
 		if(is_int()){
 			result = (result*10) + (curr_char - '0');
 		}else if(isspace(curr_char)) break;
-		else if(curr_char == ';') { curr--; break; }
+		//else if(curr_char == ';') { curr--; break; }
 		else {
-			fprintf(stderr, "invalid character at line %d: %c\n", Line, curr_char);
-			exit(1);
+			curr--;
+			break;
 		}
 		curr_char = filein[++curr];
 	}

@@ -24,8 +24,9 @@ public:
 private:
 	AstNode *alloc_ast_node();
 	AstNode *expression();
-	AstNode *unary();
 	AstNode *factor();
+	AstNode *unary();
+	AstNode *primary(Token *t);
 	bool match(Token *a, Token_ b);
 	template<typename... Args>
 	bool match(Token *a, Token_ b, Args... args);
