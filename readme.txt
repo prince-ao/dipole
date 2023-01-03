@@ -2,7 +2,8 @@ The Dipole Programming Language
 ---
 Grammer:
 <program>_S ::= ('print' <expression> )*
-<expression> ::= <unary> (('+' | '-') <unary>)*
+<expression> ::= <factor> (('+' | '-') <factor>)*
+<factor> ::= <unary> (('*' | '/') <unary>)*
 <unary> ::= '-' <unary> | int
 
 
