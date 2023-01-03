@@ -3,8 +3,8 @@
 #include "../includes/parser.h"
 
 AstNode *Parser::parse_program(){
-	AstNode *left = nullptr;
-	AstNode *root = nullptr;
+	AstNode *left = nullptr; 
+	AstNode *root = nullptr; 
 
 	while(1){
 		Token *curr = l->next();
@@ -17,6 +17,7 @@ AstNode *Parser::parse_program(){
 				return left;
 			default:
 				fputs("expected print\n", stderr);
+				exit(1);
 		}
 
 		if(root){
@@ -32,28 +33,56 @@ AstNode *Parser::parse_program(){
 }
 
 AstNode *Parser::expression(){
-	AstNode *left = int_();
-	Token *tt = l->next();
-	if(tt->token == Token_::SEMI)
-		return left;
+	AstNode *left, *right;
 
-	if(tt->token != Token_::PLUS && tt->token != Token_::MINUS){
-		fprintf(stderr, "invalid token, expected + or -, but got: \n");
-		l->print_token(tt);
-		exit(1);
+
+	left = unary();
+
+	while(1){
+		Token *tt = l->next();
+		/*if(tt->token == Token_::SEMI)
+			return left;*/
+
+		/*if(tt->token != Token_::PLUS && tt->token != Token_::MINUS){
+			fprintf(stderr, "invalid token, expected + or -, but got: \n");
+			l->print_token(tt);
+			exit(1);
+		}*/
+
+		if(!arithop(tt)){
+			l->put_back();
+			break;
+		}
+
+		right = unary();
+
+		left = mkastnode(tt, left, right);
 	}
-	left = mkastnode(tt, left, expression());
 
 	return left;
 }
 
-AstNode *Parser::int_(){
-	Token *tt = l->next();
-	if(tt->token == Token_::INT){
-		return mkastleaf(tt);
+bool Parser::arithop(Token *tt){
+	if(tt->token == Token_::PLUS || tt->token == Token_::MINUS){
+		return true;
 	}
-	fputs("invalid token, expect int\n", stderr);
-	exit(1);
+	return false;
+}
+
+AstNode *Parser::unary() {
+	AstNode *left;
+	Token *t = l->next();
+
+	if(t->token == Token_::MINUS){
+		left = unary();
+		left = mkastunary(t, left);
+	}else if(t->token == Token_::INT){
+		left = mkastleaf(t);
+	}else {
+		fputs("invalid token, expect unary\n", stderr);
+		exit(1);
+	}
+	return left;
 }
 
 AstNode *Parser::alloc_ast_node() {
@@ -62,6 +91,7 @@ AstNode *Parser::alloc_ast_node() {
 	result->data = nullptr;
 	result->left = nullptr;
 	result->right = nullptr;
+	result->parent = nullptr;
 
 	return result;
 }
@@ -72,6 +102,8 @@ AstNode *Parser::mkastnode(Token *token, AstNode *left, AstNode *right){
 	n->data = token;
 	n->left = left;
 	n->right = right;
+	if(left) n->left->parent = n;
+	if(right) n->right->parent = n;
 
 	return n;
 }

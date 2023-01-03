@@ -28,6 +28,11 @@ void Lexer::lex(char *filein){
 			case ')':
 				push_back(Token_::RPARAN, 0);
 				break;
+			case '/':
+				if(filein[curr+1] == '/'){
+					line_comment();
+				}
+				break;
 			default:
 				if(keyword()) break;
 				if(is_int()){
@@ -183,4 +188,15 @@ bool Lexer::keyword(){
 
 Token *Lexer::next(){
 	return tkns.token_array[curr_token++];
+}
+
+void Lexer::line_comment() {
+	curr_char = filein[(curr += 2)];
+	while(curr_char != '\n'){
+		curr_char = filein[++curr];
+	}
+}
+
+void Lexer::put_back(){
+	--curr_token;
 }

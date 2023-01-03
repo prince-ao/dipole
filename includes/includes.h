@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <cstdarg>
 #include <errno.h>
 #include <vector>
 

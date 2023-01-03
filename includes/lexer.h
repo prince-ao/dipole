@@ -28,7 +28,7 @@ public:
 	void put_back();
 	void lex(char *filein);
 	void print_tokens();
-	static void print_token(Token* token);
+	void print_token(Token* token);
 	void done();
 private:
 	struct Token_Array {
@@ -52,6 +52,7 @@ private:
 	bool is_int();
 	char prev_char();
 	bool keyword();
+	void line_comment();
 };
 
 #endif
