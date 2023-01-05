@@ -38,12 +38,44 @@ void Lexer::lex(char *filein){
 			case ')':
 				push_back(Token_::RPARAN, 0);
 				break;
+			case '<':
+				if(filein[curr+1] == '='){
+					push_back(Token_::LE, 0);
+					curr++;
+				}else{
+					push_back(Token_::LT, 0);
+				}
+				break;
+			case '>':
+				if(filein[curr+1] == '='){
+					push_back(Token_::GE, 0);
+					curr++;
+				}else{
+					push_back(Token_::GT, 0);
+				}
+				break;
+			case '=':
+				if(filein[curr+1] == '='){
+					push_back(Token_::EQ, 0);
+					curr++;
+				}else{
+					push_back(Token_::ASSIGN, 0);
+				}
+				break;
+			case '!':
+				if(filein[curr+1] == '='){
+					push_back(Token_::NE, 0);
+					curr++;
+				}else{
+					push_back(Token_::NOT, 0);
+				}
+				break;
 			default:
-				if(keyword()) break;
 				if(is_int()){
 					push_back(Token_::INT, get_int());
 					break;
 				}
+				if(keyword()) break;
 
 				fprintf(stderr, "unknown character at line %d: %c\n", Line, curr_char);
 				exit(1);
@@ -146,6 +178,39 @@ void Lexer::print_token(Token* token){
 		case Token_::INT:
 			printf("<%s, %d>\n", "INT", token->intvalue);
 			break;
+		case Token_::EQ:
+			printf("<%s>\n", "EQ");
+			break;
+		case Token_::NE:
+			printf("<%s>\n", "NE");
+			break;
+		case Token_::GT:
+			printf("<%s>\n", "GT");
+			break;
+		case Token_::LT:
+			printf("<%s>\n", "LT");
+			break;
+		case Token_::GE:
+			printf("<%s>\n", "GE");
+			break;
+		case Token_::LE:
+			printf("<%s>\n", "LE");
+			break;
+		case Token_::TRUE:
+			printf("<%s>\n", "TRUE");
+			break;
+		case Token_::FALSE:
+			printf("<%s>\n", "FALSE");
+			break;
+		case Token_::ASSIGN:
+			printf("<%s>\n", "ASSIGN");
+			break;
+		case Token_::NOT:
+			printf("<%s>\n", "NOT");
+			break;
+		case Token_::NONE:
+			printf("<%s>\n", "NONE");
+			break;
 		case Token_::PRINT:
 			printf("<%s>\n", "PRINT");
 			break;
@@ -170,27 +235,52 @@ void Lexer::print_token(Token* token){
 	}
 }
 
+
+char *Lexer::get_word(){
+	char *text = (char *)malloc(65 * sizeof(char));
+	int counter = 0;
+	while(isalpha(curr_char)){
+		text[counter] = curr_char;
+		curr_char = filein[++curr];
+		counter++;
+	}
+	text[counter] = 0;
+	text = (char *)realloc(text, (counter + 1) * sizeof(char));
+	return text;
+}
+
 bool Lexer::keyword(){
-	switch(curr_char){
-		case 'p':
-			char *text = (char *)malloc(6 * sizeof(char));
-			int counter = 0; int temp_curr = curr;
-			while(isalpha(curr_char)){
-				if(counter == 5) return false;
-				text[counter] = curr_char;
-				curr_char = filein[++curr];
-				counter++;
+	int old_curr = curr;
+	int old_curr_char = filein[curr];
+	char *word = get_word();
+	switch(old_curr_char){
+		case 't':
+			if(!strcmp(word, "true")){
+				push_back(Token_::TRUE, 0);
+				return true;
 			}
-			text[5] = 0;
-			if(!strcmp(text, "print")){
+			break;
+		case 'f':
+			if(!strcmp(word, "false")){
+				push_back(Token_::FALSE, 0);
+				return true;
+			}
+			break;
+		case 'p':
+			if(!strcmp(word, "print")){
 				push_back(Token_::PRINT, 0);
 				return true;
 			}
-			else {
-				curr = temp_curr;
-				curr_char = filein[curr];
-				return false;
+			break;
+		case 'n':
+			if(!strcmp(word, "none")){
+				push_back(Token_::PRINT, 0);
+				return true;
 			}
+			break;
+		default:
+			fputs("Invalid word\n", stderr);
+			return false;
 	}
 	return false;
 }

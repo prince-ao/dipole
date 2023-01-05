@@ -5,9 +5,9 @@
 #include "includes.h"
 #include "lexer.h"
 
-
 struct AstNode {
 	struct Token *data;
+	
 	AstNode *left;
 	AstNode *right;
 	AstNode *parent;
@@ -24,6 +24,9 @@ public:
 private:
 	AstNode *alloc_ast_node();
 	AstNode *expression();
+	AstNode *equality();
+	AstNode *comparison();
+	AstNode *term();
 	AstNode *factor();
 	AstNode *unary();
 	AstNode *primary(Token *t);

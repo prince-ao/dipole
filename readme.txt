@@ -1,9 +1,11 @@
 The Dipole Programming Language
 ---
-Grammer:
-<program>_S ::= ('print' <expression> )*
-<expression> ::= <factor> (('+' | '-') <factor>)*
-<factor> ::= <unary> (('*' | '/') <unary>)*
-<unary> ::= '-' <unary> | int
-
-
+Grammar:
+<program>_S ::= ('print' <expression> )* ;
+<expression> ::= <equality> ;
+<equality> ::= <comparison> (('!=' | '==') <comparison>)* ;
+<comparison> ::= <term> (('>' | '>=' | '<' | '<=') <term>)* ;
+<term> ::= <factor> (('+' | '-') <factor>)* ;
+<factor> ::= <unary> (('*' | '/') <unary>)* ;
+<unary> ::= ('-' | '!') <unary> | <primary> ;
+<primary> ::= 'int' | 'true' | 'false' | 'none' | '(' <expression> ')' ;

@@ -9,32 +9,22 @@ void Interpreter::interpret(AstNode *root){
 			interpret(root->right);
 			break;
 		case Token_::PRINT:
-			printf("%d\n", i_expression(root->left));
+			printf("%s\n", expression(root->left)->first);
 			break;
 	}
 }
 
-int Interpreter::i_expression(AstNode *root){
-	int lval, rval;
+std::pair<char *, Type> *Interpreter::expression(AstNode *root){
+	std::pair<char *, Type> *lval, *rval;
 
 	if(root->left)
-		lval = i_expression(root->left);
+		lval = expression(root->left);
 	if(root->right)
-		rval = i_expression(root->right);
+		rval = expression(root->right);
 
-	//printf("i_expr, %d, %d\n", lval, rval);
-	/*if(root->parent && 
-			root->parent->data->token == Token_::MINUS){
-		if(root->data->token == Token_::MINUS){
-			root->data->token = Token_::PLUS;
-		}else if(root->data->token == Token_::PLUS){
-			root->data->token = Token_::MINUS;
-		}
-	}*/
-	
 	switch(root->data->token){
 		case Token_::PLUS:
-			return lval + rval;
+
 			break;
 		case Token_::MINUS:
 			return lval - rval;

@@ -5,9 +5,11 @@
 #include<cstdlib>
 
 enum class Token_ {
-	PLUS, MINUS, STAR, SLASH,
+	PLUS, MINUS, STAR, SLASH, NOT,
+	TRUE, FALSE, NONE,
+	GT, GE, LT, LE, EQ, NE,
 	INT, SEMI, PRINT, EOT, 
-	LPARAN, RPARAN,
+	ASSIGN, LPARAN, RPARAN,
 	ASTGLUE
 };
 
@@ -54,6 +56,7 @@ private:
 	char prev_char();
 	bool keyword();
 	void line_comment();
+	char *get_word();
 };
 
 #endif

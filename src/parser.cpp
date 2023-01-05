@@ -33,6 +33,54 @@ AstNode *Parser::parse_program(){
 }
 
 AstNode *Parser::expression(){
+	return equality();
+}
+
+AstNode *Parser::equality(){
+	AstNode *left, *right;
+
+
+	left = comparison();
+
+	while(1){
+		Token *tt = l->next();
+		
+		if(!match(tt, Token_::NE, Token_::EQ)){
+			l->put_back();
+			break;
+		}
+
+		right = comparison();
+
+		left = mkastnode(tt, left, right);
+	}
+
+	return left;
+}
+
+AstNode *Parser::comparison(){
+	AstNode *left, *right;
+
+
+	left = term();
+
+	while(1){
+		Token *tt = l->next();
+		
+		if(!match(tt, Token_::GT, Token_::GE, Token_::LT, Token_::LE)){
+			l->put_back();
+			break;
+		}
+
+		right = term();
+
+		left = mkastnode(tt, left, right);
+	}
+
+	return left;
+}
+
+AstNode *Parser::term(){
 	AstNode *left, *right;
 
 
@@ -89,7 +137,7 @@ AstNode *Parser::unary() {
 	AstNode *left;
 	Token *t = l->next();
 
-	if(t->token == Token_::MINUS){
+	if(match(t, Token_::MINUS, Token_::NOT)){
 		left = unary();
 		left = mkastunary(t, left);
 	}else {
@@ -100,7 +148,7 @@ AstNode *Parser::unary() {
 
 AstNode *Parser::primary(Token *t){
 	AstNode *n;
-	if(t->token == Token_::INT){
+	if(match(t, Token_::INT, Token_::TRUE, Token_::FALSE, Token_::NONE)){
 		n = mkastleaf(t);
 	}else if(t->token == Token_::LPARAN){
 		 n = expression();
