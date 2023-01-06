@@ -31,12 +31,12 @@ int main(int argc, char *argv[]){
 	lexer.done();
 	fclose(prgm);
 
-	//lexer.print_tokens();
-	//puts("--end of tokens---");
+	lexer.print_tokens();
+	puts("--end of tokens---");
 
 	AstNode *p = parser.parse_program();
-	//parser.print_ast(p, 0);
-	//puts("---end of AST---");
+	parser.print_ast(p, 0);
+	puts("---end of AST---");
 
 	interpreter.interpret(p);
 
