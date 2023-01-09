@@ -22,7 +22,8 @@ public:
 	void free_ast(AstNode *root);
 	void print_ast(AstNode *root, int depth);
 private:
-	AstNode *alloc_ast_node();
+	AstNode *statement();
+	AstNode *printStmt(Token *curr);
 	AstNode *expression();
 	AstNode *equality();
 	AstNode *comparison();
@@ -37,6 +38,8 @@ private:
 	AstNode *mkastnode(Token *token, AstNode *left, AstNode *right);
 	AstNode *mkastleaf(Token *token);
 	AstNode *mkastunary(Token *token, AstNode *left);
+	AstNode *alloc_ast_node();
+
 	Lexer *l = nullptr;
 };
 

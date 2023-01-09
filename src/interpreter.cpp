@@ -20,7 +20,6 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 	int result;
 	bool b_result;
 
-	l.print_token(root->data);
 
 	if(root->left)
 		lval = expression(root->left);

@@ -1,7 +1,9 @@
 The Dipole Programming Language
 ---
 Grammar:
-<program>_S ::= ('print' <expression> )* ;
+<program>_S ::= <statement>* EOT ;
+<statement> ::= <printStmt> ;
+<printStmt> ::= 'print' <expression> 'new_line' ;
 <expression> ::= <equality> ;
 <equality> ::= <comparison> (('!=' | '==') <comparison>)* ;
 <comparison> ::= <term> (('>' | '>=' | '<' | '<=') <term>)* ;

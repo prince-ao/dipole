@@ -1,5 +1,9 @@
 print true - true
-// print 1 + 1
+
+
+
+
+print 1 + 1
 // print 1 - 1
 // print 30 - 10 - 20 + 10
 // print 20 * 20 / 4 + 1 - 30

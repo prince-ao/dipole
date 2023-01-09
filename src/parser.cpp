@@ -5,19 +5,11 @@
 AstNode *Parser::parse_program(){
 	AstNode *left = nullptr; 
 	AstNode *root = nullptr; 
+	Token	*curr = nullptr;
 
 	while(1){
-		Token *curr = l->next();
-		switch(curr->token){
-			case Token_::PRINT:
-				root = expression();
-				root = mkastunary(curr, root);
-				break;
-			case Token_::EOT:
-				return left;
-			default:
-				fputs("expected print\n", stderr);
-				exit(1);
+		if((root = statement()) == nullptr){
+			return left;
 		}
 
 		if(root){
@@ -31,6 +23,44 @@ AstNode *Parser::parse_program(){
 
 	return left;
 }
+
+AstNode *Parser::statement(){
+	AstNode *result;
+	Token *curr = l->next();
+
+	switch(curr->token){
+		case Token_::PRINT:
+			result = printStmt(curr);
+			break;
+		case Token_::EOT:
+			result = nullptr;
+			break;
+		default:
+			fputs("syntax error, token\n", stderr);
+			exit(1);
+	}
+	return result;
+}
+
+AstNode *Parser::printStmt(Token *curr){
+	AstNode *tree = nullptr;
+	
+	tree = expression();
+
+	tree = mkastunary(curr, tree);
+
+	curr = l->next();
+
+	if(!match(curr, Token_::NEW_LINE, Token_::EOT)){
+		fputs("expected new line after print\n", stderr);
+		l->print_token(curr);
+		exit(1);
+	}
+	if(match(curr, Token_::EOT)) l->put_back();
+	
+	return tree;
+}
+
 
 AstNode *Parser::expression(){
 	return equality();

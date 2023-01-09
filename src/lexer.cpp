@@ -13,6 +13,10 @@ void Lexer::lex(char *filein){
 		//fprintf(stderr, "current_char = %c; prev_char = %c\n", curr_char, filein[curr-1]);
 
 		switch(curr_char){
+			case '\n':
+				if(tkns.token_array[tkns.size-1]->token == Token_::NEW_LINE) break;
+				push_back(Token_::NEW_LINE, 0);
+				break;
 			case '+':
 				push_back(Token_::PLUS, 0);
 				break;
@@ -143,7 +147,7 @@ char Lexer::ignore_whitespace() {
 	while(curr_char != '\0'){
 		if(curr_char == '\n'){
 			Line++;
-			curr_char = filein[curr++];
+			break;
 		}else if(isspace(curr_char)){
 			curr_char = filein[curr++];
 		}else break;
@@ -231,6 +235,9 @@ void Lexer::print_token(Token* token){
 		case Token_::ASTGLUE:
 			printf("<%s>\n", "ASTGLUE");
 			break;
+		case Token_::NEW_LINE:
+			printf("<%s>\n", "NEW_LINE");
+			break;
 		default:
 			puts("unknown");
 			break;
@@ -259,24 +266,28 @@ bool Lexer::keyword(){
 		case 't':
 			if(!strcmp(word, "true")){
 				push_back(Token_::TRUE, 0);
+				curr--;
 				return true;
 			}
 			break;
 		case 'f':
 			if(!strcmp(word, "false")){
 				push_back(Token_::FALSE, 0);
+				curr--;
 				return true;
 			}
 			break;
 		case 'p':
 			if(!strcmp(word, "print")){
 				push_back(Token_::PRINT, 0);
+				curr--;
 				return true;
 			}
 			break;
 		case 'n':
 			if(!strcmp(word, "none")){
 				push_back(Token_::PRINT, 0);
+				curr--;
 				return true;
 			}
 			break;

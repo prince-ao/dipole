@@ -8,9 +8,9 @@ enum class Token_ {
 	PLUS, MINUS, STAR, SLASH, NOT,
 	TRUE, FALSE, NONE,
 	GT, GE, LT, LE, EQ, NE,
-	INT, SEMI, PRINT, EOT, 
+	INT, SEMI, PRINT,
 	ASSIGN, LPARAN, RPARAN,
-	ASTGLUE
+	ASTGLUE, EOT, NEW_LINE
 };
 
 struct Token {
