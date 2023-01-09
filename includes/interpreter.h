@@ -3,6 +3,7 @@
 #define INTERPRETER_H
 
 #include "parser.h"
+#include "lexer.h"
 #include <utility>
 #include <cstring>
 
@@ -14,6 +15,7 @@ class Interpreter {
 public:
 	void interpret(AstNode *root);
 private:
+	Lexer l;
 	std::pair<char *, Type> *expression(AstNode *root);
 	char *itoa(int n);
 	bool match(Type n, Type m);

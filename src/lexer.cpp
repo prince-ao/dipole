@@ -74,6 +74,9 @@ void Lexer::lex(char *filein){
 				if(is_int()){
 					push_back(Token_::INT, get_int());
 					break;
+				}else if(isdigit(curr_char) && !isdigit(filein[curr+1])){
+					push_back(Token_::INT, 0);
+					break;
 				}
 				if(keyword()) break;
 
@@ -95,14 +98,13 @@ char Lexer::prev_char() {
 
 bool Lexer::is_int() {
 	if(curr_char >= '1' && curr_char <= '9') return true;
-	else if(curr_char == '0' && (prev_char() >= '1' && prev_char() <= '9')) return true;
 	else return false;
 }
 
 int Lexer::get_int() {
 	int result = 0;
 	while(curr_char != '\0'){
-		if(is_int()){
+		if(isdigit(curr_char)){
 			result = (result*10) + (curr_char - '0');
 		}else if(isspace(curr_char)) break;
 		//else if(curr_char == ';') { curr--; break; }

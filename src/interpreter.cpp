@@ -20,10 +20,13 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 	int result;
 	bool b_result;
 
+	l.print_token(root->data);
+
 	if(root->left)
 		lval = expression(root->left);
 	if(root->right)
 		rval = expression(root->right);
+
 
 	switch(root->data->token){
 		case Token_::PLUS:
@@ -44,6 +47,7 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 					|| match(rval->second, Type::NONE, Type::BOOLEAN)){
 				if(lval->second == Type::NUMBER){
 					result = -atoi(lval->first);
+					free(lval);
 					return new std::pair<char *, Type>{itoa(result), Type::NUMBER};
 				}
 				free(lval);
@@ -187,13 +191,12 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 		case Token_::NOT:
 			if(match(lval->second, Type::NUMBER)){
 				free(lval);
-				free(rval);
 				char *res = (char *)malloc(5 * sizeof(char));
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
 			}
 			else if(match(lval->second, Type::BOOLEAN)){
-				if(strcmp(lval->first, "false")){
+				if(!strcmp(lval->first, "false")){
 					res = (char *)malloc(5 * sizeof(char));
 					strcpy(res, "true");
 					return new std::pair<char *, Type>{res, Type::BOOLEAN};
@@ -235,7 +238,7 @@ bool Interpreter::match(Type n, Type m){
 
 template<typename... Args>
 bool Interpreter::match(Type n, Type m, Args... args){
-	return n == m || match(m, args...);
+	return n == m || match(n, args...);
 }
 
 char *Interpreter::itoa(int n){
@@ -249,6 +252,7 @@ char *Interpreter::itoa(int n){
 
 	int max_ans = 2;
 	int len = 0;
+
 	while(n > 0){
 		if(max_ans == len+1){
 			ans = (char *)realloc(ans, max_ans * 2 * sizeof(char));
@@ -256,7 +260,7 @@ char *Interpreter::itoa(int n){
 		}
 		
 		for(int i = len; i > 0; i--){
-			ans[i+1] = ans[i];
+			ans[i] = ans[i-1];
 		}
 
 		ans[0] = (n%10)+'0';
