@@ -2,8 +2,11 @@ The Dipole Programming Language
 ---
 Grammar:
 <program>_S ::= <statement>* EOT ;
-<statement> ::= <printStmt> ;
+<statement> ::= <printStmt> | <ifStmt> ;
 <printStmt> ::= 'print' <expression> 'new_line' ;
+<ifStmt> ::= <ifHead> | <ifHead> 'else' <block> ;
+<ifHead> ::= 'if' '(' <expression> ')' <block> ;
+<block> ::= '{' <statement>* '}' ;
 <expression> ::= <equality> ;
 <equality> ::= <comparison> (('!=' | '==') <comparison>)* ;
 <comparison> ::= <term> (('>' | '>=' | '<' | '<=') <term>)* ;

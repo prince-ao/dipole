@@ -42,6 +42,12 @@ void Lexer::lex(char *filein){
 			case ')':
 				push_back(Token_::RPARAN, 0);
 				break;
+			case '{':
+				push_back(Token_::LBRACE, 0);
+				break;
+			case '}':
+				push_back(Token_::RBRACE, 0);
+				break;
 			case '<':
 				if(filein[curr+1] == '='){
 					push_back(Token_::LE, 0);
@@ -110,7 +116,7 @@ int Lexer::get_int() {
 	while(curr_char != '\0'){
 		if(isdigit(curr_char)){
 			result = (result*10) + (curr_char - '0');
-		}else if(isspace(curr_char)) break;
+		}else if(isspace(curr_char) && curr_char != '\n') break;
 		//else if(curr_char == ';') { curr--; break; }
 		else {
 			curr--;
@@ -220,6 +226,12 @@ void Lexer::print_token(Token* token){
 		case Token_::PRINT:
 			printf("<%s>\n", "PRINT");
 			break;
+		case Token_::IF:
+			printf("<%s>\n", "IF");
+			break;
+		case Token_::ELSE:
+			printf("<%s>\n", "ELSE");
+			break;
 		case Token_::SEMI:
 			printf("<%s>\n", "SEMI");
 			break;
@@ -231,6 +243,12 @@ void Lexer::print_token(Token* token){
 			break;
 		case Token_::RPARAN:
 			printf("<%s>\n", "RPEREN");
+			break;
+		case Token_::LBRACE:
+			printf("<%s>\n", "LBRACE");
+			break;
+		case Token_::RBRACE:
+			printf("<%s>\n", "RBRACE");
 			break;
 		case Token_::ASTGLUE:
 			printf("<%s>\n", "ASTGLUE");
@@ -287,6 +305,20 @@ bool Lexer::keyword(){
 		case 'n':
 			if(!strcmp(word, "none")){
 				push_back(Token_::PRINT, 0);
+				curr--;
+				return true;
+			}
+			break;
+		case 'i':
+			if(!strcmp(word, "if")){
+				push_back(Token_::IF, 0);
+				curr--;
+				return true;
+			}
+			break;
+		case 'e':
+			if(!strcmp(word, "else")){
+				push_back(Token_::ELSE, 0);
 				curr--;
 				return true;
 			}

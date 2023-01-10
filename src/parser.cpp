@@ -16,7 +16,7 @@ AstNode *Parser::parse_program(){
 			if(left == nullptr){
 				left = root;
 			} else{
-				left = mkastnode(new Token(Token_::ASTGLUE), left, root);
+				left = mkastbinary(new Token(Token_::ASTGLUE), left, root);
 			}
 		}
 	}
@@ -26,20 +26,96 @@ AstNode *Parser::parse_program(){
 
 AstNode *Parser::statement(){
 	AstNode *result;
+top:
 	Token *curr = l->next();
 
 	switch(curr->token){
 		case Token_::PRINT:
 			result = printStmt(curr);
 			break;
+		case Token_::IF:
+			result = ifStmt(curr);
+			break;
 		case Token_::EOT:
 			result = nullptr;
 			break;
+		case Token_::RBRACE:
+			result = nullptr;
+			break;
+		case Token_::NEW_LINE:
+			goto top;
 		default:
 			fputs("syntax error, token\n", stderr);
 			exit(1);
 	}
 	return result;
+}
+
+AstNode *Parser::block() {
+	Token *curr = l->next();
+	AstNode *left = nullptr; 
+	AstNode *root = nullptr;
+	
+	if(!match(curr, Token_::LBRACE)){
+		fputs("expected a block\n", stderr);
+		exit(1);
+	}
+
+	while(1){
+		if((root = statement()) == nullptr){
+			l->put_back();
+			break;
+		}
+
+		if(root){
+			if(left == nullptr){
+				left = root;
+			} else{
+				left = mkastbinary(new Token(Token_::ASTGLUE), left, root);
+			}
+		}
+	}
+
+	curr = l->next();
+	if(!match(curr, Token_::RBRACE)){
+		fputs("expected a block\n", stderr);
+		exit(1);
+	}
+
+	return left;
+}
+
+AstNode *Parser::ifStmt(Token *ifhead) {
+	Token *curr = l->next();
+	AstNode *boolean_expr, *true_expr, *false_expr = nullptr;
+
+	if(!match(curr, Token_::LPARAN)){
+		fputs("invalid syntax, expected left parenthesis\n", stderr);
+		exit(1);
+	}
+
+	boolean_expr = expression();
+
+	curr = l->next();
+
+	if(!match(curr, Token_::RPARAN)){
+		fputs("invalid syntax, expected right parenthesis\n", stderr);
+		exit(1);
+	}
+
+	true_expr = block();
+
+	curr = l->next();
+
+	if(match(curr, Token_::ELSE)){
+		false_expr = block();
+	}
+
+	if(match(curr, Token_::EOT)){
+		l->put_back();
+	}
+
+	return mkastnode(ifhead, boolean_expr, true_expr, false_expr);
 }
 
 AstNode *Parser::printStmt(Token *curr){
@@ -51,12 +127,12 @@ AstNode *Parser::printStmt(Token *curr){
 
 	curr = l->next();
 
-	if(!match(curr, Token_::NEW_LINE, Token_::EOT)){
+	if(!match(curr, Token_::NEW_LINE, Token_::EOT, Token_::RBRACE)){
 		fputs("expected new line after print\n", stderr);
 		l->print_token(curr);
 		exit(1);
 	}
-	if(match(curr, Token_::EOT)) l->put_back();
+	if(match(curr, Token_::RBRACE, Token_::EOT)) l->put_back();
 	
 	return tree;
 }
@@ -82,7 +158,7 @@ AstNode *Parser::equality(){
 
 		right = comparison();
 
-		left = mkastnode(tt, left, right);
+		left = mkastbinary(tt, left, right);
 	}
 
 	return left;
@@ -104,7 +180,7 @@ AstNode *Parser::comparison(){
 
 		right = term();
 
-		left = mkastnode(tt, left, right);
+		left = mkastbinary(tt, left, right);
 	}
 
 	return left;
@@ -126,7 +202,7 @@ AstNode *Parser::term(){
 
 		right = factor();
 
-		left = mkastnode(tt, left, right);
+		left = mkastbinary(tt, left, right);
 	}
 
 	return left;
@@ -148,7 +224,7 @@ AstNode *Parser::factor(){
 
 		right = unary();
 
-		left = mkastnode(tt, left, right);
+		left = mkastbinary(tt, left, right);
 	}
 
 	return left;
@@ -202,24 +278,30 @@ AstNode *Parser::alloc_ast_node() {
 	return result;
 }
 
-AstNode *Parser::mkastnode(Token *token, AstNode *left, AstNode *right){
+AstNode *Parser::mkastnode(Token *token, AstNode *left, AstNode *mid, AstNode *right){
 	AstNode *n = alloc_ast_node();
 
 	n->data = token;
 	n->left = left;
+	n->mid = mid;
 	n->right = right;
 	if(left) n->left->parent = n;
 	if(right) n->right->parent = n;
+	if(mid) n->mid->parent = n;
 
 	return n;
 }
 
+AstNode *Parser::mkastbinary(Token *token, AstNode *left, AstNode *right){
+	return mkastnode(token, left, nullptr, right);
+}
+
 AstNode *Parser::mkastleaf(Token *token){
-	return mkastnode(token, nullptr, nullptr);
+	return mkastbinary(token, nullptr, nullptr);
 }
 
 AstNode *Parser::mkastunary(Token *token, AstNode *left){
-	return mkastnode(token, left, nullptr);
+	return mkastbinary(token, left, nullptr);
 }
 
 void Parser::free_ast(AstNode *root){
@@ -238,9 +320,10 @@ void Parser::print_ast(AstNode *root, int depth){
 	if(root == nullptr) return;
 
 	for(int i = 0; i < depth; i++)
-		printf(" ");
+		printf("*");
 	l->print_token(root->data);
 
 	print_ast(root->left, depth+1);
+	print_ast(root->mid, depth+1);
 	print_ast(root->right, depth+1);
 }

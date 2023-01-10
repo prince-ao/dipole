@@ -11,6 +11,14 @@ void Interpreter::interpret(AstNode *root){
 		case Token_::PRINT:
 			printf("%s\n", expression(root->left)->first);
 			break;
+		case Token_::IF:
+			std::pair<char *, Type> *boolean_expr_ans = expression(root->left);
+			if(!strcmp("true", boolean_expr_ans->first)) interpret(root->mid);
+			else if(!strcmp("false", boolean_expr_ans->first) || !strcmp("none", boolean_expr_ans->first)) interpret(root->right);
+			else {
+				fputs("expected boolean if statement\n", stderr);
+				exit(1);
+			}
 	}
 }
 
@@ -81,7 +89,7 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
 			}
-			result = atoi(lval->first) * atoi(rval->first);
+			result = atoi(lval->first) / atoi(rval->first);
 			free(lval);
 			free(rval);
 			return new std::pair<char *, Type>{itoa(result), Type::NUMBER};
