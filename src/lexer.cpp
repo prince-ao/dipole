@@ -5,6 +5,7 @@ void Lexer::lex(char *filein){
 	this->filein = filein;
 	curr = 0;
 	curr_char = filein[curr];
+	if(isBlockCmt) block_comment();
 
 	
 	while(curr_char != '\0') {
@@ -29,6 +30,9 @@ void Lexer::lex(char *filein){
 			case '/':
 				if(filein[curr+1] == '/'){
 					line_comment();
+				}else if(filein[curr+1] == '*'){
+					curr += 2;
+					block_comment();
 				}else{
 					push_back(Token_::SLASH, 0);
 				}
@@ -337,8 +341,24 @@ Token *Lexer::next(){
 
 void Lexer::line_comment() {
 	curr_char = filein[(curr += 2)];
-	while(curr_char != '\n'){
+	while(curr_char != '\n' && curr_char != '\0'){
 		curr_char = filein[++curr];
+	}
+}
+
+void Lexer::block_comment(){
+	while(curr_char != '\0'){
+		if(curr_char == '*' && filein[curr+1] == '/') break;
+		curr_char = filein[++curr];
+	}
+	printf("current char = %d\n", curr_char);
+	if(curr_char == '\0') {
+		isBlockCmt = true;
+		curr--;
+	}
+	else{
+		isBlockCmt = false;
+		curr_char = filein[(curr += 3)];
 	}
 }
 

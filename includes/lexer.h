@@ -49,6 +49,7 @@ private:
 	char *filein;// for the file
 
 	int Line = 1;
+	bool isBlockCmt = false;
 
 	char ignore_whitespace();
 	void push_back(Token_ token, int intvalue);
@@ -57,6 +58,7 @@ private:
 	char prev_char();
 	bool keyword();
 	void line_comment();
+	void block_comment();
 	char *get_word();
 };
 
