@@ -3,12 +3,14 @@
 #define LEXER_H
 
 #include<cstdlib>
+#include"../includes/includes.h"
 
 enum class Token_ {
 	PLUS, MINUS, STAR, SLASH, NOT,
 	TRUE, FALSE, NONE,
 	GT, GE, LT, LE, EQ, NE,
 	INT, SEMI, PRINT, IF, ELSE,
+	LET, IDENT,
 	ASSIGN, LPARAN, RPARAN,
 	LBRACE, RBRACE,
 	ASTGLUE, EOT, NEW_LINE
@@ -19,7 +21,10 @@ struct Token {
 		token = type;
 	}
 	Token_ token;
-	int intvalue = 0;
+	union{
+		int intvalue;
+		char *stringvalue;
+	} value;
 };
 
 class Lexer {
@@ -29,6 +34,7 @@ public:
 		curr_token = 0;
 	}
 	Token *next();
+	Token *current();
 	void put_back();
 	void lex(char *filein);
 	void print_tokens();
@@ -53,10 +59,11 @@ private:
 
 	char ignore_whitespace();
 	void push_back(Token_ token, int intvalue);
+	void push_back(Token_ token, char *stringvalue);
 	int get_int();
 	bool is_int();
 	char prev_char();
-	bool keyword();
+	std::pair<bool, char*> keyword();
 	void line_comment();
 	void block_comment();
 	char *get_word();

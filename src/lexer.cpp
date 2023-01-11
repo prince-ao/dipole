@@ -1,4 +1,3 @@
-#include"../includes/includes.h"
 #include "../includes/lexer.h"
 
 void Lexer::lex(char *filein){
@@ -92,10 +91,9 @@ void Lexer::lex(char *filein){
 					push_back(Token_::INT, 0);
 					break;
 				}
-				if(keyword()) break;
-
-				fprintf(stderr, "unknown character at line %d: %c\n", Line, curr_char);
-				exit(1);
+				std::pair<bool, char *> word;
+				if((word = keyword()).first) break;
+				else push_back(Token_::IDENT, word.second);
 		}
 
 		curr_char = filein[++curr];
@@ -141,12 +139,32 @@ void Lexer::push_back(Token_ token, int intvalue) {
 		}
 		Token *temp = (Token *)malloc(sizeof(Token));
 		temp->token = token;
-		temp->intvalue = intvalue;
+		temp->value.intvalue = intvalue;
 		tkns.token_array[tkns.size++] = temp;
 	}else{
 		Token *temp = (Token *)malloc(sizeof(Token));
 		temp->token = token;
-		temp->intvalue = intvalue;
+		temp->value.intvalue = intvalue;
+		tkns.token_array[tkns.size++] = temp;
+	}
+}
+
+void Lexer::push_back(Token_ token, char *stringvalue) {
+	if(tkns.capacity == tkns.size){
+		tkns.capacity *= 2;
+		errno = 0;
+		if((tkns.token_array = (Token **)realloc(tkns.token_array, tkns.capacity * sizeof(Token))) == NULL){
+			perror("realloc, lexer.c 28.37");
+			exit(1);
+		}
+		Token *temp = (Token *)malloc(sizeof(Token));
+		temp->token = token;
+		temp->value.stringvalue = stringvalue;
+		tkns.token_array[tkns.size++] = temp;
+	}else{
+		Token *temp = (Token *)malloc(sizeof(Token));
+		temp->token = token;
+		temp->value.stringvalue = stringvalue;
 		tkns.token_array[tkns.size++] = temp;
 	}
 }
@@ -192,7 +210,13 @@ void Lexer::print_token(Token* token){
 			printf("<%s>\n", "SLASH");
 			break;
 		case Token_::INT:
-			printf("<%s, %d>\n", "INT", token->intvalue);
+			printf("<%s, %d>\n", "INT", token->value.intvalue);
+			break;
+		case Token_::LET:
+			printf("<%s>\n", "LET");
+			break;
+		case Token_::IDENT:
+			printf("<%s, %s>\n", "IDENT", token->value.stringvalue);
 			break;
 		case Token_::EQ:
 			printf("<%s>\n", "EQ");
@@ -280,7 +304,7 @@ char *Lexer::get_word(){
 	return text;
 }
 
-bool Lexer::keyword(){
+std::pair<bool, char*> Lexer::keyword(){
 	int old_curr = curr;
 	int old_curr_char = filein[curr];
 	char *word = get_word();
@@ -289,54 +313,65 @@ bool Lexer::keyword(){
 			if(!strcmp(word, "true")){
 				push_back(Token_::TRUE, 0);
 				curr--;
-				return true;
+				return std::make_pair(true, word);
 			}
 			break;
 		case 'f':
 			if(!strcmp(word, "false")){
 				push_back(Token_::FALSE, 0);
 				curr--;
-				return true;
+				return std::make_pair(true, word);
 			}
 			break;
 		case 'p':
 			if(!strcmp(word, "print")){
 				push_back(Token_::PRINT, 0);
 				curr--;
-				return true;
+				return std::make_pair(true, word);
 			}
 			break;
 		case 'n':
 			if(!strcmp(word, "none")){
 				push_back(Token_::PRINT, 0);
 				curr--;
-				return true;
+				return std::make_pair(true, word);
 			}
 			break;
 		case 'i':
 			if(!strcmp(word, "if")){
 				push_back(Token_::IF, 0);
 				curr--;
-				return true;
+				return std::make_pair(true, word);
 			}
 			break;
 		case 'e':
 			if(!strcmp(word, "else")){
 				push_back(Token_::ELSE, 0);
 				curr--;
-				return true;
+				return std::make_pair(true, word);
+			}
+			break;
+		case 'l':
+			if(!strcmp(word, "let")){
+				push_back(Token_::LET, 0);
+				curr--;
+				return std::make_pair(true, word);
 			}
 			break;
 		default:
-			fputs("Invalid word\n", stderr);
-			return false;
+			curr--;
+			return std::make_pair(false, word);
 	}
-	return false;
+	return std::make_pair(false, word);
 }
 
 
 Token *Lexer::next(){
 	return tkns.token_array[curr_token++];
+}
+
+Token *Lexer::current(){
+	return tkns.token_array[curr_token-1];
 }
 
 void Lexer::line_comment() {

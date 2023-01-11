@@ -25,6 +25,8 @@ public:
 private:
 	AstNode *statement();
 	AstNode *block();
+	AstNode *declStmt(Token *let);
+	AstNode *assignStmt(Token *key);
 	AstNode *ifStmt(Token *ifhead);
 	AstNode *printStmt(Token *curr);
 	AstNode *expression();

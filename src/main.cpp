@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 	parser.print_ast(p, 0);
 	puts("---end of AST---");
 
-	interpreter.interpret(p);
+	//interpreter.interpret(p);
 
 	exit(0);
 }

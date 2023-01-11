@@ -36,6 +36,12 @@ top:
 		case Token_::IF:
 			result = ifStmt(curr);
 			break;
+		case Token_::LET:
+			result = declStmt(curr);
+			break;
+		case Token_::IDENT:
+			result = assignStmt(curr);
+			break;
 		case Token_::EOT:
 			result = nullptr;
 			break;
@@ -85,8 +91,69 @@ AstNode *Parser::block() {
 	return left;
 }
 
+AstNode *Parser::declStmt(Token *let) {
+	Token *curr = l->next();
+	AstNode *tree;
+
+	if(!match(curr, Token_::IDENT)) {
+		fputs("expected an identifier\n", stderr);
+		exit(1);
+	}
+
+	tree = mkastleaf(curr);
+
+	curr = l->next();
+
+	if(match(curr, Token_::ASSIGN)) {
+		tree = mkastbinary(curr, tree, expression());
+
+		curr = l->next();
+
+		if(!match(curr, Token_::NEW_LINE)){
+			fputs("expected a new line\n", stderr);
+			exit(1);
+		}
+		
+		return mkastunary(let, tree);
+	}
+
+	curr = l->current();
+
+	if(!match(curr, Token_::NEW_LINE)){
+		fputs("expected a new line\n", stderr);
+		exit(1);
+	}
+
+	tree = mkastunary(let, tree);
+
+	return tree;
+}
+
+AstNode *Parser::assignStmt(Token *key){
+	Token *curr = l->next(); 
+
+	AstNode *tree;
+
+	if(!match(curr, Token_::ASSIGN)){
+		fputs("expected assignment\n", stderr);
+		exit(1);
+	}
+
+	tree = mkastbinary(curr, mkastleaf(key), expression());
+
+	curr = l->next();
+
+	if(!match(curr, Token_::NEW_LINE)){
+		fputs("expected a new line\n", stderr);
+		exit(1);
+	}
+
+	return tree;
+}
+
 AstNode *Parser::ifStmt(Token *ifhead) {
 	Token *curr = l->next();
+
 	AstNode *boolean_expr, *true_expr, *false_expr = nullptr;
 
 	if(!match(curr, Token_::LPARAN)){
@@ -254,7 +321,12 @@ AstNode *Parser::unary() {
 
 AstNode *Parser::primary(Token *t){
 	AstNode *n;
-	if(match(t, Token_::INT, Token_::TRUE, Token_::FALSE, Token_::NONE)){
+	if(match(t, 
+				Token_::INT, 
+				Token_::TRUE, 
+				Token_::FALSE, 
+				Token_::NONE, 
+				Token_::IDENT)){
 		n = mkastleaf(t);
 	}else if(t->token == Token_::LPARAN){
 		 n = expression();

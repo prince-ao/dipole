@@ -231,7 +231,7 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 			strcpy(res, "none");
 			return new std::pair<char *, Type>{res, Type::NONE};
 		case Token_::INT:
-	return new std::pair<char *, Type>{itoa(root->data->intvalue), Type::NUMBER};
+	return new std::pair<char *, Type>{itoa(root->data->value.intvalue), Type::NUMBER};
 		default:
 			res = (char *)malloc(5 * sizeof(char));
 			strcpy(res, "none");
