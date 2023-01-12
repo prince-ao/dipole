@@ -1,6 +1,7 @@
 #include "../includes/interpreter.h"
 
 void Interpreter::interpret(AstNode *root){
+	std::pair<char *, Type> *boolean_expr_ans;
 	if(root == nullptr) return;
 
 	switch(root->data->token){
@@ -12,13 +13,16 @@ void Interpreter::interpret(AstNode *root){
 			printf("%s\n", expression(root->left)->first);
 			break;
 		case Token_::IF:
-			std::pair<char *, Type> *boolean_expr_ans = expression(root->left);
+			boolean_expr_ans = expression(root->left);
 			if(!strcmp("true", boolean_expr_ans->first)) interpret(root->mid);
 			else if(!strcmp("false", boolean_expr_ans->first) || !strcmp("none", boolean_expr_ans->first)) interpret(root->right);
 			else {
 				fputs("expected boolean if statement\n", stderr);
 				exit(1);
 			}
+		case Token_::LET:
+			global.define(root->left->left->data->value.stringvalue, 
+					*expression(root->left->right));
 	}
 }
 
@@ -232,6 +236,8 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 			return new std::pair<char *, Type>{res, Type::NONE};
 		case Token_::INT:
 	return new std::pair<char *, Type>{itoa(root->data->value.intvalue), Type::NUMBER};
+		case Token_::IDENT:
+			return new std::pair<char *, Type>{global.get(root->data->value.stringvalue)};
 		default:
 			res = (char *)malloc(5 * sizeof(char));
 			strcpy(res, "none");

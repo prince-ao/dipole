@@ -6,10 +6,7 @@
 #include "lexer.h"
 #include <utility>
 #include <cstring>
-
-enum class Type {
-	NONE, NUMBER, BOOLEAN
-};
+#include "environment.h"
 
 class Interpreter {
 public:
@@ -21,6 +18,7 @@ private:
 	bool match(Type n, Type m);
 	template<typename... Args>
 	bool match(Type n, Type m, Args... args);
+	Environment global;
 };
 
 #endif
