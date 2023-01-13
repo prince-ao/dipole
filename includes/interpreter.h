@@ -10,7 +10,7 @@
 
 class Interpreter {
 public:
-	void interpret(AstNode *root);
+	void interpret(AstNode *root, Environment *scope);
 private:
 	Lexer l;
 	std::pair<char *, Type> *expression(AstNode *root);
@@ -18,7 +18,7 @@ private:
 	bool match(Type n, Type m);
 	template<typename... Args>
 	bool match(Type n, Type m, Args... args);
-	Environment global;
+	Environment *global;
 };
 
 #endif

@@ -1,28 +1,34 @@
 #include "../includes/interpreter.h"
 
-void Interpreter::interpret(AstNode *root){
+void Interpreter::interpret(AstNode *root, Environment *scope){
 	std::pair<char *, Type> *boolean_expr_ans;
+	Environment *new_scope;
 	if(root == nullptr) return;
 
 	switch(root->data->token){
 		case Token_::ASTGLUE:
-			interpret(root->left);
-			interpret(root->right);
+			interpret(root->left, scope);
+			interpret(root->right, scope);
 			break;
 		case Token_::PRINT:
 			printf("%s\n", expression(root->left)->first);
 			break;
 		case Token_::IF:
+			new_scope = new Environment(scope);
 			boolean_expr_ans = expression(root->left);
-			if(!strcmp("true", boolean_expr_ans->first)) interpret(root->mid);
-			else if(!strcmp("false", boolean_expr_ans->first) || !strcmp("none", boolean_expr_ans->first)) interpret(root->right);
+			if(!strcmp("true", boolean_expr_ans->first)) interpret(root->mid, new_scope);
+			else if(!strcmp("false", boolean_expr_ans->first) || !strcmp("none", boolean_expr_ans->first)) interpret(root->right, new_scope);
 			else {
 				fputs("expected boolean if statement\n", stderr);
 				exit(1);
 			}
+			break;
 		case Token_::LET:
-			global.define(root->left->left->data->value.stringvalue, 
+			global->define(root->left->left->data->value.stringvalue, 
 					*expression(root->left->right));
+			break;
+		//case Token_::ASSIGN:
+
 	}
 }
 
