@@ -13,6 +13,8 @@ class Environment {
 public:
 	Environment(){
 		e = nullptr;
+		char *temp = new char[]{"apple"};
+		env[temp] = std::make_pair(temp, Type::NONE);
 	}
 	Environment(Environment *e){
 		this->e = e;

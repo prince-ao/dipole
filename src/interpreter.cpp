@@ -11,11 +11,11 @@ void Interpreter::interpret(AstNode *root, Environment *scope){
 			interpret(root->right, scope);
 			break;
 		case Token_::PRINT:
-			printf("%s\n", expression(root->left)->first);
+			printf("%s\n", expression(root->left, scope)->first);
 			break;
 		case Token_::IF:
 			new_scope = new Environment(scope);
-			boolean_expr_ans = expression(root->left);
+			boolean_expr_ans = expression(root->left, scope);
 			if(!strcmp("true", boolean_expr_ans->first)) interpret(root->mid, new_scope);
 			else if(!strcmp("false", boolean_expr_ans->first) || !strcmp("none", boolean_expr_ans->first)) interpret(root->right, new_scope);
 			else {
@@ -24,15 +24,16 @@ void Interpreter::interpret(AstNode *root, Environment *scope){
 			}
 			break;
 		case Token_::LET:
-			global->define(root->left->left->data->value.stringvalue, 
-					*expression(root->left->right));
+			scope->define(root->left->left->data->value.stringvalue, 
+					*expression(root->left->right, scope));
 			break;
-		//case Token_::ASSIGN:
-
+		case Token_::ASSIGN:
+			scope->assign(root->left->data->value.stringvalue, *expression(root->right, scope));
+			break;
 	}
 }
 
-std::pair<char *, Type> *Interpreter::expression(AstNode *root){
+std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *scope){
 	std::pair<char *, Type> *lval, *rval;
 	char *res;
 	int result;
@@ -40,9 +41,9 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 
 
 	if(root->left)
-		lval = expression(root->left);
+		lval = expression(root->left, scope);
 	if(root->right)
-		rval = expression(root->right);
+		rval = expression(root->right, scope);
 
 
 	switch(root->data->token){
@@ -243,7 +244,7 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root){
 		case Token_::INT:
 	return new std::pair<char *, Type>{itoa(root->data->value.intvalue), Type::NUMBER};
 		case Token_::IDENT:
-			return new std::pair<char *, Type>{global.get(root->data->value.stringvalue)};
+			return new std::pair<char *, Type>{scope->get(root->data->value.stringvalue)};
 		default:
 			res = (char *)malloc(5 * sizeof(char));
 			strcpy(res, "none");

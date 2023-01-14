@@ -14,6 +14,7 @@ int main(int argc, char *argv[]){
 	Lexer lexer;
 	Parser parser(&lexer);
 	Interpreter interpreter;
+	Environment *env = new Environment();
 	char buf[BUF_SIZE];
 	FILE *prgm;
 
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]){
 	parser.print_ast(p, 0);
 	puts("---end of AST---");
 
-	interpreter.interpret(p);
+	interpreter.interpret(p, env);
 
 	exit(0);
 }
