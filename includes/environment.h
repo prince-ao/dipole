@@ -6,7 +6,7 @@
 #include<cstdlib>
 #include<cstring>
 enum class Type {
-	NONE, NUMBER, BOOLEAN
+	NONE, NUMBER, BOOLEAN, STRING
 };
 
 class Environment {

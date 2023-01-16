@@ -2,7 +2,10 @@ The Dipole Programming Language
 ---
 Grammar:
 <program>_S ::= <statement>* EOT ;
-<statement> ::= <printStmt> | <ifStmt> | <declStmt> | <assignStmt> ;
+<statement> ::= <printStmt> | 
+	<ifStmt> | 
+	<declStmt> | 
+	<assignStmt> ;
 <printStmt> ::= 'print' <expression> 'new_line' ;
 <ifStmt> ::= <ifHead> | <ifHead> 'else' <block> ;
 <ifHead> ::= 'if' '(' <expression> ')' <block> ;
@@ -15,4 +18,10 @@ Grammar:
 <term> ::= <factor> (('+' | '-') <factor>)* ;
 <factor> ::= <unary> (('*' | '/') <unary>)* ;
 <unary> ::= ('-' | '!') <unary> | <primary> ;
-<primary> ::= 'int' | 'true' | 'false' | 'none' | 'identifier' | (' <expression> ')' ;
+<primary> ::= 'int' | 
+	'true' | 
+	'false' | 
+	'none' | 
+	'identifier' | 
+	'string' |
+	(' <expression> ')' ;

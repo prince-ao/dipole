@@ -1,9 +1,6 @@
-let a = 10
-if(a == 10) {
-	print a
-	let a = 20
-	print a
+let fname = "john"
+if(fname != "john"){
+	print "You get an iphone"
+}else {
+	print "You get a android"
 }
-print a
-
-

@@ -6,7 +6,7 @@ void Lexer::lex(char *filein){
 	curr_char = filein[curr];
 	if(isBlockCmt) block_comment();
 
-	
+	char *string;
 	while(curr_char != '\0') {
 		curr_char = ignore_whitespace();
 		if(curr_char == '\0') break;
@@ -82,6 +82,10 @@ void Lexer::lex(char *filein){
 				}else{
 					push_back(Token_::NOT, 0);
 				}
+				break;
+			case '"':
+				string = get_string();
+				push_back(Token_::STRING, string);
 				break;
 			default:
 				if(is_int()){
@@ -217,6 +221,9 @@ void Lexer::print_token(Token* token){
 			break;
 		case Token_::IDENT:
 			printf("<%s, %s>\n", "IDENT", token->value.stringvalue);
+			break;
+		case Token_::STRING:
+			printf("<%s, %s>\n", "STRING", token->value.stringvalue);
 			break;
 		case Token_::EQ:
 			printf("<%s>\n", "EQ");
@@ -365,6 +372,32 @@ std::pair<bool, char*> Lexer::keyword(){
 	return std::make_pair(false, word);
 }
 
+char *Lexer::get_string(){
+	curr_char = filein[++curr];
+	int size = 0;
+	int capacity = 2;
+	char *word = (char *)malloc(2 * sizeof(char));
+	while(curr_char != '\0' && curr_char != '\n' && curr_char != '"') {
+		if(size == capacity){
+			word = (char *)realloc(word, (capacity *= 2) * sizeof(char));
+		}
+		word[size++] = curr_char;
+		curr_char = filein[++curr];
+	}
+	if(curr_char == '"'){
+		if(capacity == size){
+				word = (char *)realloc(word, (++capacity) * sizeof(char));
+		}else if(capacity > size){
+				word = (char *)realloc(word, (size+1) * sizeof(char));
+		}
+		word[size++] = '\0';
+		return word;
+	} else {
+		fputs("string not closed on the line\n", stderr);
+		exit(1);
+	}
+}
+
 
 Token *Lexer::next(){
 	return tkns.token_array[curr_token++];
@@ -386,7 +419,6 @@ void Lexer::block_comment(){
 		if(curr_char == '*' && filein[curr+1] == '/') break;
 		curr_char = filein[++curr];
 	}
-	printf("current char = %d\n", curr_char);
 	if(curr_char == '\0') {
 		isBlockCmt = true;
 		curr--;

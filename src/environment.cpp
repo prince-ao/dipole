@@ -21,7 +21,7 @@ void Environment::assign(char *name, std::pair<char *, Type> value){
 	env[name] = value;
 }
 
-std::pair<char *, Type> Environment::get(char *name){
+std::pair<char *, Type> Environment::get(char *name) {
 	for(auto &x : env){
 		if(!strcmp(x.first, name)){
 			return x.second;

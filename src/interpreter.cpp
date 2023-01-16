@@ -56,6 +56,12 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
 			}
+			else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				char *new_string = (char *)malloc((strlen(lval->first) + strlen(rval->first) + 1)* sizeof(char));
+				strcpy(new_string, lval->first);
+				strcat(new_string, rval->first);
+				return new std::pair<char *, Type>{new_string, Type::STRING};
+			}
 			result = atoi(lval->first) + atoi(rval->first);
 			free(lval);
 			free(rval);
@@ -113,6 +119,17 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
 			}
+			else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				res = (char *)malloc(6 * sizeof(char));
+				if(strcmp(lval->first, rval->first) > 0){
+					strcpy(res, "true");
+				}else{
+					strcpy(res, "false");
+				}
+				free(lval);
+				free(rval);
+				return new std::pair<char *, Type>{res, Type::BOOLEAN};
+			}
 			res = (char *)malloc(6 * sizeof(char));
 			if(atoi(lval->first) > atoi(rval->first))
 				strcpy(res, "true");
@@ -129,6 +146,16 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				char *res = (char *)malloc(5 * sizeof(char));
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
+			} else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				res = (char *)malloc(6 * sizeof(char));
+				if(strcmp(lval->first, rval->first) < 0){
+					strcpy(res, "true");
+				}else{
+					strcpy(res, "false");
+				}
+				free(lval);
+				free(rval);
+				return new std::pair<char *, Type>{res, Type::BOOLEAN};
 			}
 			res = (char *)malloc(6 * sizeof(char));
 			if(atoi(lval->first) < atoi(rval->first))
@@ -146,6 +173,16 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				char *res = (char *)malloc(5 * sizeof(char));
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
+			} else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				res = (char *)malloc(6 * sizeof(char));
+				if(strcmp(lval->first, rval->first) >= 0){
+					strcpy(res, "true");
+				}else{
+					strcpy(res, "false");
+				}
+				free(lval);
+				free(rval);
+				return new std::pair<char *, Type>{res, Type::BOOLEAN};
 			}
 			res = (char *)malloc(6 * sizeof(char));
 			if(atoi(lval->first) >= atoi(rval->first))
@@ -163,6 +200,16 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				char *res = (char *)malloc(5 * sizeof(char));
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
+			} else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				res = (char *)malloc(6 * sizeof(char));
+				if(strcmp(lval->first, rval->first) <= 0){
+					strcpy(res, "true");
+				}else{
+					strcpy(res, "false");
+				}
+				free(lval);
+				free(rval);
+				return new std::pair<char *, Type>{res, Type::BOOLEAN};
 			}
 			res = (char *)malloc(6 * sizeof(char));
 			if(atoi(lval->first) <= atoi(rval->first))
@@ -180,6 +227,16 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				char *res = (char *)malloc(5 * sizeof(char));
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
+			} else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				res = (char *)malloc(6 * sizeof(char));
+				if(strcmp(lval->first, rval->first) == 0){
+					strcpy(res, "true");
+				}else{
+					strcpy(res, "false");
+				}
+				free(lval);
+				free(rval);
+				return new std::pair<char *, Type>{res, Type::BOOLEAN};
 			}
 			res = (char *)malloc(6 * sizeof(char));
 			if(atoi(lval->first) == atoi(rval->first))
@@ -197,6 +254,16 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 				char *res = (char *)malloc(5 * sizeof(char));
 				strcpy(res, "none");
 				return new std::pair<char *, Type>{res, Type::NONE};
+			} else if(match(lval->second, Type::STRING) && match(rval->second, Type::STRING)){
+				res = (char *)malloc(6 * sizeof(char));
+				if(strcmp(lval->first, rval->first) != 0){
+					strcpy(res, "true");
+				}else{
+					strcpy(res, "false");
+				}
+				free(lval);
+				free(rval);
+				return new std::pair<char *, Type>{res, Type::BOOLEAN};
 			}
 			res = (char *)malloc(6 * sizeof(char));
 			if(atoi(lval->first) != atoi(rval->first))
@@ -245,6 +312,8 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 	return new std::pair<char *, Type>{itoa(root->data->value.intvalue), Type::NUMBER};
 		case Token_::IDENT:
 			return new std::pair<char *, Type>{scope->get(root->data->value.stringvalue)};
+		case Token_::STRING:
+			return new std::pair<char *, Type>{root->data->value.stringvalue, Type::STRING};
 		default:
 			res = (char *)malloc(5 * sizeof(char));
 			strcpy(res, "none");

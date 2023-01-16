@@ -7,7 +7,7 @@
 
 enum class Token_ {
 	PLUS, MINUS, STAR, SLASH, NOT,
-	TRUE, FALSE, NONE,
+	TRUE, FALSE, NONE, STRING,
 	GT, GE, LT, LE, EQ, NE,
 	INT, SEMI, PRINT, IF, ELSE,
 	LET, IDENT,
@@ -60,6 +60,7 @@ private:
 	char ignore_whitespace();
 	void push_back(Token_ token, int intvalue);
 	void push_back(Token_ token, char *stringvalue);
+	char *get_string();
 	int get_int();
 	bool is_int();
 	char prev_char();

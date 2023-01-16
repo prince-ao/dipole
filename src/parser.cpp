@@ -178,7 +178,7 @@ AstNode *Parser::ifStmt(Token *ifhead) {
 		false_expr = block();
 	}
 
-	if(match(curr, Token_::EOT)){
+	if(match(curr, Token_::EOT)) {
 		l->put_back();
 	}
 
@@ -326,7 +326,8 @@ AstNode *Parser::primary(Token *t){
 				Token_::TRUE, 
 				Token_::FALSE, 
 				Token_::NONE, 
-				Token_::IDENT)){
+				Token_::IDENT,
+				Token_::STRING)){
 		n = mkastleaf(t);
 	}else if(t->token == Token_::LPARAN){
 		 n = expression();
