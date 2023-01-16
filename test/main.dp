@@ -1,7 +1,1 @@
-let a = 10
-let b = 20
-if(b < a || a == 11){
-	print "yay"
-}else {
-	print "boo"
-}
+print "boo" || "foo"

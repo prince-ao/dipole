@@ -357,7 +357,7 @@ std::pair<bool, char*> Lexer::keyword(){
 			break;
 		case 'n':
 			if(!strcmp(word, "none")){
-				push_back(Token_::PRINT, 0);
+				push_back(Token_::NONE, 0);
 				curr--;
 				return std::make_pair(true, word);
 			}
