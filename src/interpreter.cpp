@@ -1,5 +1,4 @@
 #include "../includes/interpreter.h"
-
 void Interpreter::interpret(AstNode *root, Environment *scope){
 	std::pair<char *, Type> *boolean_expr_ans;
 	Environment *new_scope;
@@ -21,6 +20,12 @@ void Interpreter::interpret(AstNode *root, Environment *scope){
 			else {
 				fputs("expected boolean if statement\n", stderr);
 				exit(1);
+			}
+			break;
+		case Token_::WHILE:
+			new_scope = new Environment(scope);
+			while(!strcmp(expression(root->left, new_scope)->first, "true")){
+				interpret(root->right, new_scope);
 			}
 			break;
 		case Token_::LET:

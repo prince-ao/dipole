@@ -110,6 +110,7 @@ void Lexer::lex(char *filein){
 				std::pair<bool, char *> word;
 				if((word = keyword()).first) break;
 				else push_back(Token_::IDENT, word.second);
+				curr--;
 		}
 
 		curr_char = filein[++curr];
@@ -282,6 +283,9 @@ void Lexer::print_token(Token* token){
 		case Token_::IF:
 			printf("<%s>\n", "IF");
 			break;
+		case Token_::WHILE:
+			printf("<%s>\n", "WHILE");
+			break;
 		case Token_::ELSE:
 			printf("<%s>\n", "ELSE");
 			break;
@@ -379,6 +383,13 @@ std::pair<bool, char*> Lexer::keyword(){
 		case 'l':
 			if(!strcmp(word, "let")){
 				push_back(Token_::LET, 0);
+				curr--;
+				return std::make_pair(true, word);
+			}
+			break;
+		case 'w':
+			if(!strcmp(word, "while")){
+				push_back(Token_::WHILE, 0);
 				curr--;
 				return std::make_pair(true, word);
 			}

@@ -14,6 +14,11 @@ void Environment::assign(char *name, std::pair<char *, Type> value){
 		 if(!strcmp(it->first, name)) st = it;
 	 }
 	if(st == env.end()){
+		std::pair<char *, Type> nm = get(name);
+		if(nm.second != Type::NONE){
+			env[name] = value;
+			return;
+		}
 		fprintf(stderr, "%s has not been defined\n", name);
 		exit(1);
 	}

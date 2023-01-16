@@ -11,6 +11,7 @@ enum class Token_ {
 	GT, GE, LT, LE, EQ, NE,
 	AND, OR,
 	INT, SEMI, PRINT, IF, ELSE,
+	WHILE,
 	LET, IDENT,
 	ASSIGN, LPARAN, RPARAN,
 	LBRACE, RBRACE,

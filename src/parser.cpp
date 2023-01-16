@@ -36,6 +36,9 @@ top:
 		case Token_::IF:
 			result = ifStmt(curr);
 			break;
+		case Token_::WHILE:
+			result = whileLoop(curr);
+			break;
 		case Token_::LET:
 			result = declStmt(curr);
 			break;
@@ -183,6 +186,34 @@ AstNode *Parser::ifStmt(Token *ifhead) {
 	}
 
 	return mkastnode(ifhead, boolean_expr, true_expr, false_expr);
+}
+
+AstNode *Parser::whileLoop(Token *whileHead) {
+	Token *curr = l->next();
+
+	AstNode *boolean_expr = nullptr, *blk = nullptr;
+
+	if(!match(curr, Token_::LPARAN)){
+		fputs("invalid syntax, expected left parenthesis\n", stderr);
+		exit(1);
+	}
+
+	boolean_expr = expression();
+
+	curr = l->next();
+
+	if(!match(curr, Token_::RPARAN)){
+		fputs("invalid syntax, expected right parenthesis\n", stderr);
+		exit(1);
+	}
+
+	blk = block();
+
+	if(match(curr, Token_::EOT)) {
+		l->put_back();
+	}
+
+	return mkastbinary(whileHead, boolean_expr, blk);
 }
 
 AstNode *Parser::printStmt(Token *curr){

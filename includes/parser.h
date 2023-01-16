@@ -28,11 +28,12 @@ private:
 	AstNode *declStmt(Token *let);
 	AstNode *assignStmt(Token *key);
 	AstNode *ifStmt(Token *ifhead);
+	AstNode *whileLoop(Token *whileHead);
 	AstNode *printStmt(Token *curr);
 	AstNode *expression();
+	AstNode *logic_op();
 	AstNode *equality();
 	AstNode *comparison();
-	AstNode *logic_op();
 	AstNode *term();
 	AstNode *factor();
 	AstNode *unary();
