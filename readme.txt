@@ -2,7 +2,8 @@ The Dipole Programming Language
 ---
 Grammar:
 <program>_S ::= <statement>* EOT ;
-<statement> ::= <printStmt> | 
+<statement> ::= 
+	<printStmt> | 
 	<ifStmt> | 
 	<declStmt> | 
 	<assignStmt> |
@@ -21,7 +22,8 @@ Grammar:
 <term> ::= <factor> (('+' | '-') <factor>)* ;
 <factor> ::= <unary> (('*' | '/') <unary>)* ;
 <unary> ::= ('-' | '!') <unary> | <primary> ;
-<primary> ::= 'int' | 
+<primary> ::= 
+	'int' | 
 	'true' | 
 	'false' | 
 	'none' | 
