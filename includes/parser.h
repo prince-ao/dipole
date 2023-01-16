@@ -32,6 +32,7 @@ private:
 	AstNode *expression();
 	AstNode *equality();
 	AstNode *comparison();
+	AstNode *logic_op();
 	AstNode *term();
 	AstNode *factor();
 	AstNode *unary();

@@ -59,6 +59,18 @@ void Lexer::lex(char *filein){
 					push_back(Token_::LT, 0);
 				}
 				break;
+			case '&':
+				if(filein[curr+1] == '&'){
+					push_back(Token_::AND, 0);
+					curr++;
+				}
+				break;
+			case '|':
+				if(filein[curr+1] == '|'){
+					push_back(Token_::OR, 0);
+					curr++;
+				}
+				break;
 			case '>':
 				if(filein[curr+1] == '='){
 					push_back(Token_::GE, 0);
@@ -242,6 +254,12 @@ void Lexer::print_token(Token* token){
 			break;
 		case Token_::LE:
 			printf("<%s>\n", "LE");
+			break;
+		case Token_::AND:
+			printf("<%s>\n", "AND");
+			break;
+		case Token_::OR:
+			printf("<%s>\n", "OR");
 			break;
 		case Token_::TRUE:
 			printf("<%s>\n", "TRUE");

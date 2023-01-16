@@ -1,6 +1,7 @@
-let fname = "john"
-if(fname != "john"){
-	print "You get an iphone"
+let a = 10
+let b = 20
+if(b < a || a == 11){
+	print "yay"
 }else {
-	print "You get a android"
+	print "boo"
 }

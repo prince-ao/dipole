@@ -206,7 +206,29 @@ AstNode *Parser::printStmt(Token *curr){
 
 
 AstNode *Parser::expression(){
-	return equality();
+	return logic_op();
+}
+
+AstNode *Parser::logic_op(){
+	AstNode *left, *right;
+
+
+	left = equality();
+
+	while(1){
+		Token *tt = l->next();
+		
+		if(!match(tt, Token_::AND, Token_::OR)){
+			l->put_back();
+			break;
+		}
+
+		right = equality();
+
+		left = mkastbinary(tt, left, right);
+	}
+
+	return left;
 }
 
 AstNode *Parser::equality(){

@@ -273,6 +273,42 @@ std::pair<char *, Type> *Interpreter::expression(AstNode *root, Environment *sco
 			free(lval);
 			free(rval);
 			return new std::pair<char *, Type>{res, Type::BOOLEAN};
+		case Token_::AND:
+			if( !match(lval->second, Type::BOOLEAN)
+					|| !match(rval->second, Type::BOOLEAN)){
+				free(lval);
+				free(rval);
+				char *res = (char *)malloc(5 * sizeof(char));
+				strcpy(res, "none");
+				return new std::pair<char *, Type>{res, Type::NONE};
+			}
+			res = (char *)malloc(6 * sizeof(char));
+			if(!strcmp(lval->first, "true") && !strcmp(rval->first, "true")){
+				strcpy(res, "true");
+			}else{
+				strcpy(res, "false");
+			}
+			free(lval);
+			free(rval);
+			return new std::pair<char *, Type>{res, Type::BOOLEAN};
+		case Token_::OR:
+			if( !match(lval->second, Type::BOOLEAN)
+					|| !match(rval->second, Type::BOOLEAN)){
+				free(lval);
+				free(rval);
+				char *res = (char *)malloc(5 * sizeof(char));
+				strcpy(res, "none");
+				return new std::pair<char *, Type>{res, Type::NONE};
+			}
+			res = (char *)malloc(6 * sizeof(char));
+			if(!strcmp(lval->first, "true") || !strcmp(rval->first, "true")){
+				strcpy(res, "true");
+			}else{
+				strcpy(res, "false");
+			}
+			free(lval);
+			free(rval);
+			return new std::pair<char *, Type>{res, Type::BOOLEAN};
 		case Token_::NOT:
 			if(match(lval->second, Type::NUMBER)){
 				free(lval);
