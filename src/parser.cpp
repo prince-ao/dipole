@@ -39,6 +39,9 @@ top:
 		case Token_::WHILE:
 			result = whileLoop(curr);
 			break;
+		case Token_::FOR:
+			result = forLoop(curr);
+			break;
 		case Token_::LET:
 			result = declStmt(curr);
 			break;
@@ -112,8 +115,8 @@ AstNode *Parser::declStmt(Token *let) {
 
 		curr = l->next();
 
-		if(!match(curr, Token_::NEW_LINE)){
-			fputs("expected a new line\n", stderr);
+		if(!match(curr, Token_::NEW_LINE, Token_::SEMI)){
+			fputs("expected a new line or semicolon\n", stderr);
 			exit(1);
 		}
 		
@@ -146,8 +149,8 @@ AstNode *Parser::assignStmt(Token *key){
 
 	curr = l->next();
 
-	if(!match(curr, Token_::NEW_LINE)){
-		fputs("expected a new line\n", stderr);
+	if(!match(curr, Token_::NEW_LINE, Token_::SEMI, Token_::RPARAN)){
+		fputs("expected a new line or semicolon\n", stderr);
 		exit(1);
 	}
 
@@ -216,6 +219,53 @@ AstNode *Parser::whileLoop(Token *whileHead) {
 	return mkastbinary(whileHead, boolean_expr, blk);
 }
 
+AstNode *Parser::forLoop(Token *forHead) {
+	Token *curr = l->next();
+
+	
+	AstNode *boolean_expr = nullptr, 
+					*assign_expr = nullptr, *incr_expr = nullptr, *blk = nullptr;
+
+	if(!match(curr, Token_::LPARAN)){
+		fputs("invalid syntax, expected left parenthesis\n", stderr);
+		exit(1);
+	}
+
+	auto peek = l->peek();
+	if(match(peek, Token_::LET)){
+		assign_expr = declStmt(l->next());
+	}else if(match(peek, Token_::IDENT)){
+		assign_expr = assignStmt(l->next());
+	}else {
+		fputs("invalid syntax, expected assignment or declaration\n", stderr);
+		exit(1);
+	}
+
+	boolean_expr = expression();
+
+	curr = l->next();
+
+	if(!match(curr, Token_::SEMI)){
+		fputs("invalid syntax, expected semicolon after for loop expression\n", stderr);
+		exit(1);
+	}
+
+	curr = l->next();
+	incr_expr = assignStmt(curr);
+
+	blk = block();
+
+	if(match(curr, Token_::EOT)) {
+		l->put_back();
+	}
+
+	AstNode *glue = mkastleaf(new Token(Token_::ASTGLUE));
+	AstNode *temp = mkastbinary(forHead, assign_expr, glue);
+	mkastnode(glue, boolean_expr, incr_expr, blk);
+
+	return temp;
+}
+
 AstNode *Parser::printStmt(Token *curr){
 	AstNode *tree = nullptr;
 	
@@ -225,12 +275,12 @@ AstNode *Parser::printStmt(Token *curr){
 
 	curr = l->next();
 
-	if(!match(curr, Token_::NEW_LINE, Token_::EOT, Token_::RBRACE)){
-		fputs("expected new line after print\n", stderr);
+	if(!match(curr, Token_::NEW_LINE, Token_::EOT, Token_::SEMI)){
+		fputs("expected new line or semicolon\n", stderr);
 		l->print_token(curr);
 		exit(1);
 	}
-	if(match(curr, Token_::RBRACE, Token_::EOT)) l->put_back();
+	if(match(curr, Token_::EOT)) l->put_back();
 	
 	return tree;
 }
@@ -418,8 +468,24 @@ AstNode *Parser::mkastnode(Token *token, AstNode *left, AstNode *mid, AstNode *r
 	return n;
 }
 
+AstNode *Parser::mkastnode(AstNode *root, AstNode *left, AstNode *mid, AstNode *right){
+
+	root->left = left;
+	root->mid = mid;
+	root->right = right;
+	if(left) root->left->parent = root;
+	if(right) root->right->parent = root;
+	if(mid) root->mid->parent = root;
+
+	return root;
+}
+
 AstNode *Parser::mkastbinary(Token *token, AstNode *left, AstNode *right){
 	return mkastnode(token, left, nullptr, right);
+}
+
+AstNode *Parser::mkastbinary(AstNode *root, AstNode *left, AstNode *right){
+	return mkastnode(root, left, nullptr, right);
 }
 
 AstNode *Parser::mkastleaf(Token *token){

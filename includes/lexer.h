@@ -11,7 +11,7 @@ enum class Token_ {
 	GT, GE, LT, LE, EQ, NE,
 	AND, OR,
 	INT, SEMI, PRINT, IF, ELSE,
-	WHILE,
+	WHILE, FOR,
 	LET, IDENT,
 	ASSIGN, LPARAN, RPARAN,
 	LBRACE, RBRACE,
@@ -38,6 +38,7 @@ public:
 	Token *next();
 	Token *current();
 	void put_back();
+	Token *peek();
 	void lex(char *filein);
 	void print_tokens();
 	void print_token(Token* token);

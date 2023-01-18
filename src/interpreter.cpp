@@ -7,6 +7,7 @@ void Interpreter::interpret(AstNode *root, Environment *scope){
 	switch(root->data->token){
 		case Token_::ASTGLUE:
 			interpret(root->left, scope);
+			interpret(root->mid, scope);
 			interpret(root->right, scope);
 			break;
 		case Token_::PRINT:
@@ -26,6 +27,14 @@ void Interpreter::interpret(AstNode *root, Environment *scope){
 			new_scope = new Environment(scope);
 			while(!strcmp(expression(root->left, new_scope)->first, "true")){
 				interpret(root->right, new_scope);
+			}
+			break;
+		case Token_::FOR:
+			new_scope = new Environment(scope);
+			interpret(root->left, scope);
+			while(!strcmp(expression(root->right->left, new_scope)->first, "true")){
+				interpret(root->right->right, new_scope);
+				interpret(root->right->mid, new_scope);
 			}
 			break;
 		case Token_::LET:

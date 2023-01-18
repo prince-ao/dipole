@@ -29,6 +29,7 @@ private:
 	AstNode *assignStmt(Token *key);
 	AstNode *ifStmt(Token *ifhead);
 	AstNode *whileLoop(Token *whileHead);
+	AstNode *forLoop(Token *forHead);
 	AstNode *printStmt(Token *curr);
 	AstNode *expression();
 	AstNode *logic_op();
@@ -43,7 +44,9 @@ private:
 	bool match(Token *a, Token_ b, Args... args);
 	bool arithop(Token *tt);
 	AstNode *mkastnode(Token *token, AstNode *left, AstNode *mid, AstNode *right);
+	AstNode *mkastnode(AstNode *root, AstNode *left, AstNode *mid, AstNode *right);
 	AstNode *mkastbinary(Token *token, AstNode *left, AstNode *right);
+	AstNode *mkastbinary(AstNode *root, AstNode *left, AstNode *right);
 	AstNode *mkastleaf(Token *token);
 	AstNode *mkastunary(Token *token, AstNode *left);
 	AstNode *alloc_ast_node();

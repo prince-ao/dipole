@@ -9,14 +9,14 @@ Grammar:
 	<assignStmt> |
 	<whileLoop> |
 	<forLoop>;
-<printStmt> ::= 'print' <expression> 'new_line' ;
+<printStmt> ::= 'print' <expression> ( 'new_line' | ';' ) ;
 <ifStmt> ::= <ifHead> | <ifHead> 'else' <block> ;
 <ifHead> ::= 'if' '(' <expression> ')' <block> ;
 <block> ::= '{' <statement>* '}' ;
-<declStmt> ::= 'let' 'identifier' ( '=' <expression> )? 'new_line' ;
-<assignStmt> ::= 'identifier' '=' <expression> 'new_line' ;
+<declStmt> ::= 'let' 'identifier' ( '=' <expression> )? ( 'new_line' | ';' ) ;
+<assignStmt> ::= 'identifier' '=' <expression>  ( 'new_line' | ';' ) ;
 <whileLoop> ::= 'while' '(' <expression> ')' <block> ;
-<forLoop> ::= 'for' '(' ( <declStmt> | <assignStmt> )? ';' ( <expression> )? ';' ( <assignStmt> )? ')' <block> ;
+<forLoop> ::= 'for' '(' ( <declStmt> | <assignStmt> )? ( <expression> )? ';' ( <assignStmt> )? ')' <block> ;
 <expression> ::= <logic_op> ;
 <logic_op>  ::= <equality> (('or' | 'and') <equality>)* ;
 <equality> ::= <comparison> (('!=' | '==') <comparison>)* ;

@@ -286,6 +286,9 @@ void Lexer::print_token(Token* token){
 		case Token_::WHILE:
 			printf("<%s>\n", "WHILE");
 			break;
+		case Token_::FOR:
+			printf("<%s>\n", "FOR");
+			break;
 		case Token_::ELSE:
 			printf("<%s>\n", "ELSE");
 			break;
@@ -348,6 +351,10 @@ std::pair<bool, char*> Lexer::keyword(){
 		case 'f':
 			if(!strcmp(word, "false")){
 				push_back(Token_::FALSE, 0);
+				curr--;
+				return std::make_pair(true, word);
+			}else if(!strcmp(word, "for")) {
+				push_back(Token_::FOR, 0);
 				curr--;
 				return std::make_pair(true, word);
 			}
@@ -460,4 +467,8 @@ void Lexer::block_comment(){
 
 void Lexer::put_back(){
 	--curr_token;
+}
+
+Token *Lexer::peek() {
+	return tkns.token_array[curr_token];
 }
