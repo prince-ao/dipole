@@ -1,4 +1,5 @@
 #include "../includes/lexer.h"
+#include "stdio.h"
 
 void Lexer::lex(char *filein){
 	this->filein = filein;
@@ -10,7 +11,7 @@ void Lexer::lex(char *filein){
 	while(curr_char != '\0') {
 		curr_char = ignore_whitespace();
 		if(curr_char == '\0') break;
-		//fprintf(stderr, "current_char = %c; prev_char = %c\n", curr_char, filein[curr-1]);
+		// fprintf(stdout, "current_char = %c; prev_char = %c\n", curr_char, filein[curr-1]);
 
 		switch(curr_char){
 			case '\n':
@@ -110,7 +111,7 @@ void Lexer::lex(char *filein){
 				std::pair<bool, char *> word;
 				if((word = keyword()).first) break;
 				else push_back(Token_::IDENT, word.second);
-				curr--;
+				if(filein[curr] == '\n') curr--;
 		}
 
 		curr_char = filein[++curr];

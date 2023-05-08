@@ -1,0 +1,4 @@
+let apple = 10
+if(apple == 10) {
+	print "hello world"
+}
