@@ -216,106 +216,106 @@ void Lexer::print_tokens() {
 void Lexer::print_token(Token* token){
 	switch(token->token){
 		case Token_::PLUS:
-			printf("<%s>\n", "PLUS");
+			printf("[%s]\n", "PLUS");
 			break;
 		case Token_::MINUS:
-			printf("<%s>\n", "MINUS");
+			printf("[%s]\n", "MINUS");
 			break;
 		case Token_::STAR:
-			printf("<%s>\n", "STAR");
+			printf("[%s]\n", "STAR");
 			break;
 		case Token_::SLASH:
-			printf("<%s>\n", "SLASH");
+			printf("[%s]\n", "SLASH");
 			break;
 		case Token_::INT:
-			printf("<%s, %d>\n", "INT", token->value.intvalue);
+			printf("[%s, %d]\n", "INT", token->value.intvalue);
 			break;
 		case Token_::LET:
-			printf("<%s>\n", "LET");
+			printf("[%s]\n", "LET");
 			break;
 		case Token_::IDENT:
-			printf("<%s, %s>\n", "IDENT", token->value.stringvalue);
+			printf("[%s, %s]\n", "IDENT", token->value.stringvalue);
 			break;
 		case Token_::STRING:
-			printf("<%s, %s>\n", "STRING", token->value.stringvalue);
+			printf("[%s, %s]\n", "STRING", token->value.stringvalue);
 			break;
 		case Token_::EQ:
-			printf("<%s>\n", "EQ");
+			printf("[%s]\n", "EQ");
 			break;
 		case Token_::NE:
-			printf("<%s>\n", "NE");
+			printf("[%s]\n", "NE");
 			break;
 		case Token_::GT:
-			printf("<%s>\n", "GT");
+			printf("[%s]\n", "GT");
 			break;
 		case Token_::LT:
-			printf("<%s>\n", "LT");
+			printf("[%s]\n", "LT");
 			break;
 		case Token_::GE:
-			printf("<%s>\n", "GE");
+			printf("[%s]\n", "GE");
 			break;
 		case Token_::LE:
-			printf("<%s>\n", "LE");
+			printf("[%s]\n", "LE");
 			break;
 		case Token_::AND:
-			printf("<%s>\n", "AND");
+			printf("[%s]\n", "AND");
 			break;
 		case Token_::OR:
-			printf("<%s>\n", "OR");
+			printf("[%s]\n", "OR");
 			break;
 		case Token_::TRUE:
-			printf("<%s>\n", "TRUE");
+			printf("[%s]\n", "TRUE");
 			break;
 		case Token_::FALSE:
-			printf("<%s>\n", "FALSE");
+			printf("[%s]\n", "FALSE");
 			break;
 		case Token_::ASSIGN:
-			printf("<%s>\n", "ASSIGN");
+			printf("[%s]\n", "ASSIGN");
 			break;
 		case Token_::NOT:
-			printf("<%s>\n", "NOT");
+			printf("[%s]\n", "NOT");
 			break;
 		case Token_::NONE:
-			printf("<%s>\n", "NONE");
+			printf("[%s]\n", "NONE");
 			break;
 		case Token_::PRINT:
-			printf("<%s>\n", "PRINT");
+			printf("[%s]\n", "PRINT");
 			break;
 		case Token_::IF:
-			printf("<%s>\n", "IF");
+			printf("[%s]\n", "IF");
 			break;
 		case Token_::WHILE:
-			printf("<%s>\n", "WHILE");
+			printf("[%s]\n", "WHILE");
 			break;
 		case Token_::FOR:
-			printf("<%s>\n", "FOR");
+			printf("[%s]\n", "FOR");
 			break;
 		case Token_::ELSE:
-			printf("<%s>\n", "ELSE");
+			printf("[%s]\n", "ELSE");
 			break;
 		case Token_::SEMI:
-			printf("<%s>\n", "SEMI");
+			printf("[%s]\n", "SEMI");
 			break;
 		case Token_::EOT:
-			printf("<%s>\n", "EOT");
+			printf("[%s]\n", "EOT");
 			break;
 		case Token_::LPARAN:
-			printf("<%s>\n", "LPEREN");
+			printf("[%s]\n", "LPEREN");
 			break;
 		case Token_::RPARAN:
-			printf("<%s>\n", "RPEREN");
+			printf("[%s]\n", "RPEREN");
 			break;
 		case Token_::LBRACE:
-			printf("<%s>\n", "LBRACE");
+			printf("[%s]\n", "LBRACE");
 			break;
 		case Token_::RBRACE:
-			printf("<%s>\n", "RBRACE");
+			printf("[%s]\n", "RBRACE");
 			break;
 		case Token_::ASTGLUE:
-			printf("<%s>\n", "ASTGLUE");
+			printf("[%s]\n", "ASTGLUE");
 			break;
 		case Token_::NEW_LINE:
-			printf("<%s>\n", "NEW_LINE");
+			printf("[%s]\n", "NEW_LINE");
 			break;
 		default:
 			puts("unknown");
